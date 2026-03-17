@@ -37,7 +37,7 @@ namespace Exame_2_parical.Clases
         public void AgregarEmpleado()
         {
             Console.WriteLine("\n--- Registro de Nuevo Empleado ---");
-            // ID Automático basado en la cantidad actual + 1
+           
             int nuevoId = listaEmpleados.Count + 1;
 
             Console.Write("Nombre: ");
@@ -54,14 +54,18 @@ namespace Exame_2_parical.Clases
         public void BuscarPorId()
         {
             Console.Write("\nIngrese el ID a buscar: ");
-            int idBusqueda = int.Parse(Console.ReadLine());
+            if (int.TryParse(Console.ReadLine(), out int idBusqueda))
+            {
 
-            var empleado = listaEmpleados.FirstOrDefault(e => e.Id == idBusqueda);
+                var todosLosEmpleados = empleadosPredefinidos.Concat(listaEmpleados);
 
-            if (empleado != null)
-                Console.WriteLine("Resultado: " + empleado.ToString());
-            else
-                Console.WriteLine("Empleado no encontrado.");
+                var empleado = todosLosEmpleados.FirstOrDefault(e => e.Id == idBusqueda);
+
+                if (empleado != null)
+                    Console.WriteLine("¡Encontrado!: " + empleado.ToString());
+                else
+                    Console.WriteLine("Empleado no encontrado en ninguna base de datos.");
+            }
         }
 
         public void BuscarPorDepartamento()
@@ -69,16 +73,22 @@ namespace Exame_2_parical.Clases
             Console.Write("\nIngrese el Departamento a buscar: ");
             string deptoBusqueda = Console.ReadLine();
 
-            var resultados = listaEmpleados.Where(e => e.Departamento.Equals(deptoBusqueda, StringComparison.OrdinalIgnoreCase)).ToList();
+         
+            var todos = empleadosPredefinidos.Concat(listaEmpleados);
+
+            var resultados = todos.Where(e => e.Departamento.Equals(deptoBusqueda, StringComparison.OrdinalIgnoreCase)).ToList();
 
             if (resultados.Any())
             {
-                Console.WriteLine($"--- Empleados en {deptoBusqueda} ---");
-                resultados.ForEach(e => Console.WriteLine(e.ToString()));
+                Console.WriteLine($"--- Resultados en el departamento {deptoBusqueda} ---");
+                foreach (var emp in resultados)
+                {
+                    Console.WriteLine(emp.ToString());
+                }
             }
             else
             {
-                Console.WriteLine("No se encontraron empleados en ese departamento.");
+                Console.WriteLine("No hay empleados en ese departamento.");
             }
         }
 
@@ -92,7 +102,7 @@ namespace Exame_2_parical.Clases
 
             Console.WriteLine("\n--- Todos los Empleados (Lista) ---");
             foreach (var emp in listaEmpleados)
-            {
+            {   
                 Console.WriteLine(emp.ToString());
             }
         }
